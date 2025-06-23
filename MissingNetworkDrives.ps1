@@ -7,7 +7,7 @@ function Confirm-Drives{
 function Get-DriveLetters{
     param( $userInfo )
     $usedLetters = @()
-    $currentDrives = Get-PSDrive -PSProvider FileSystem | Select Name
+    $currentDrives = Get-PSDrive -PSProvider FileSystem | Select-Object Name
     
     foreach ($letter in $currentDrives){
         $usedLetters += $letter.Name
@@ -32,7 +32,7 @@ switch($menuChoice){
         $userName = Read-Host "`nEnter the username of the drive owner"
 
         <##### Find the user's personal drive; Exit if it doesn't exist #####>
-        $userDriveInfo = Get-ADUser -Identity $userName -Properties HomeDrive, HomeDirectory | Select HomeDrive, HomeDirectory
+        $userDriveInfo = Get-ADUser -Identity $userName -Properties HomeDrive, HomeDirectory | Select-Object HomeDrive, HomeDirectory
         if($userDriveInfo.HomeDrive.Count -eq 0) { 
             Write-Host "User does not have a home directory."
             Write-Host "Exiting program..."
