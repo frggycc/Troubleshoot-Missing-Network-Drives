@@ -1,3 +1,8 @@
+function Exit-Program{
+    Write-Host "`nExiting program..."
+    Start-Sleep -Seconds 2
+    Exit
+}
 function Confirm-Drives{
     Write-Host
     Get-PSDrive -PSProvider FileSystem | Format-Table
@@ -35,9 +40,7 @@ switch($menuChoice){
         $userDriveInfo = Get-ADUser -Identity $userName -Properties HomeDrive, HomeDirectory | Select-Object HomeDrive, HomeDirectory
         if($userDriveInfo.HomeDrive.Count -eq 0) { 
             Write-Host "User does not have a home directory."
-            Write-Host "Exiting program..."
-            Start-Sleep -Seconds 2
-            Exit
+            Exit-Program
         }
 
         <##### Get list of taken drive letters #####>
@@ -58,18 +61,21 @@ switch($menuChoice){
             Write-Host "Error creating the drive."
             $_.Exception.Message
         }
+
+        Exit-Program
     }
+
     "2"{
         Confirm-Drives
         gpupdate /force
         Confirm-Drives
         Get-Process Explorer | Stop-Process
-        Start-Sleep -Seconds 5
+        Start-Sleep -Seconds 7
         Confirm-Drives
+        Write-Host "If user home drive still missing, run again using menu choice 1."
+        Exit-Program
     }
     default {
-        Write-Host "`nExiting program..."
-        Start-Sleep -Seconds 1
+        Exit-Program
     }
 }
-
