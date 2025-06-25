@@ -46,14 +46,20 @@ switch($menuChoice){
         <##### Get list of taken drive letters #####>
         $lettersInUse = Get-DriveLetters -userInfo $userDriveInfo
 
-        if($lettersInUse -notcontains "Z"){ $tempLetter = "Z" }
-        elseif($lettersInUse -notcontains "Y"){ $tempLetter = "Y" }
-        else{ $tempLetter = "X" }
+        <##### Assign a temporary letter to drive #####>
+        $validLetters = "ZYXWVUTSRQPONMLKJIHGFEDCBA"
+        $i = 0
+        while($i -le 25){
+            if($lettersInUse -notcontains $validLetters[$i]){
+                $tempLetter = $validLetters[$i]
+                break
+            }
+        }
 
-        <##### Create the temporary suer drive #####>
+        <##### Create the temporary user drive #####>
         Write-Host "Creating temporary network drive..."
         try{
-            New-PSDrive -Name $newLetter -PSProvider "FileSystem" -Root $userDriveInfo.HomeDirectory -Persist
+            # New-PSDrive -Name $newLetter -PSProvider "FileSystem" -Root $userDriveInfo.HomeDirectory -Persist
             Write-Host -NoNewline "Drive successfully created: "
             Write-Host "$($tempLetter):\ to $($userDriveInfo.HomeDirectory)"
         }
